@@ -1,2 +1,15 @@
-{{trello-list}}
+<h1>Tiny Trello</h1>
+<h3><button {{action "addList"}}>Add a List</button></h3>
+
+{{#each lists as |list|}}
+  <h3>
+    {{input value=list.title placeholder="Enter List Title"}}
+    <button {{action "addItem" list}}>Add Item</button>
+    {{#each list.items as |item|}}
+      <ul>
+        <li>{{input value=item.title placeholder='Enter Item Title'}}</li>
+      </ul>
+    {{/each}}
+  </h3>
+{{/each}}
 {{outlet}}
