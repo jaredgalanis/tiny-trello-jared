@@ -12,6 +12,23 @@ export default Component.extend({
   actions: {
     closeModal() {
       this.get('closeModal')();
+    },
+
+    deleteItem(item) {
+      swal({
+        title: "Are you sure?",
+        text: "Once deleted, you will not be able to recover this item!",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      })
+      .then((willDelete) => {
+        if (willDelete) {
+          this.get('deleteItem')(item);
+        } else {
+          swal.close();
+        }
+      });
     }
   }
 
