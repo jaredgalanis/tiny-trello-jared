@@ -1,2 +1,149 @@
-
 @import "ember-cli-bootstrap-4/bootstrap";
+@import "./prism-ghcolors";
+@import "./fonts";
+
+// Layout
+$list-width: 300px;
+$gap: 10px;
+$scrollbar-thickness: 17px;
+$list-header-height: 36px;
+$list-footer-height: 36px;
+// Misc
+$list-border-radius: 5px;
+$card-border-radius: 3px;
+// Colors
+$list-bg-color: #e2e4e6;
+$background: rgb(75, 191, 107);
+$lightColor: #c1b5d3;
+$whiteish: #c8c7d5;
+
+body,
+html {
+  height: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: $whiteish;
+  font-family: $f-primary;
+}
+
+body {
+  background-color: $background;
+  font-family: $f-primary;
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+  margin-top: 0.2rem;
+}
+
+.pageTitle {
+  color: $lightColor;
+  font-size: 50pt;
+
+  .ember-title {
+    font-family: $f-pacifico;
+    margin-bottom: 3rem;
+  }
+}
+
+.lists {
+  display: flex;
+  overflow-x: auto;
+  //width: 100%; // This is needed for FF < 54
+  > * {
+    flex: 0 0 auto; // 'rigid' lists
+    margin-left: $gap;
+  }
+  &::after {
+    content: '';
+    flex: 0 0 $gap;
+  }
+}
+
+.list {
+  width: $list-width;
+  height: 100%;
+
+  > * {
+    background-color: $list-bg-color;
+    color: #333;
+
+    padding: 0 $gap;
+  }
+
+  header {
+    line-height: $list-header-height;
+    font-size: 16px;
+    font-weight: bold;
+    border-top-left-radius: $list-border-radius;
+    border-top-right-radius: $list-border-radius;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  footer {
+    line-height: $list-footer-height;
+    border-bottom-left-radius: $list-border-radius;
+    border-bottom-right-radius: $list-border-radius;
+    color: #888;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    max-height: 100%;
+    overflow-y: auto;
+
+    li {
+      background-color: #fff;
+      padding: $gap;
+      &:not(:last-child) {
+        margin-bottom: $gap;
+      }
+
+      &:hover{
+        opacity:0.4;
+      }
+
+      border-radius: $card-border-radius;
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
+.icon-hover {
+  padding-left: .5rem;
+  &:hover{
+    color: $background !important;
+  }
+}
+
+.footer-controls {
+  padding-top: $gap;
+  padding-bottom: $gap;
+  padding-right: 0;
+  margin-right: 0;
+  > .close-new {
+    padding-top: .1rem;
+    padding-right: 0;
+    padding-left: 15px;
+  }
+  > .add-new {
+    padding-top: .2rem;
+    padding-right: 0;
+    padding-left: 22px;
+  }
+}

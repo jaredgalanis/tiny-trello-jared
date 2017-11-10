@@ -10,8 +10,8 @@ export default Component.extend({
   },
 
   actions: {
-    closeModal() {
-      this.get('closeModal')();
+    closeModal(item) {
+      this.get('closeModal')(item);
     },
 
     deleteItem(item) {

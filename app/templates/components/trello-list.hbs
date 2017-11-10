@@ -1,1 +1,20 @@
-{{yield}}
+<div class="list">
+  <header>
+    {{input class="form-control" value=list.title placeholder="Enter List Title ..."}}
+  </header>
+  <ul>
+    {{#each list.items as |item|}}
+      {{trello-item
+        item=item
+        click=(action "editItem" item)}}
+    {{/each}}
+  </ul>
+  <footer>
+    {{new-item
+      newItem=newItem
+      list=list
+      isAddingItem=isAddingItem
+      addItem=(action "addItem")
+      cancelAddItem=(action "cancelAddItem")}}
+  </footer>
+</div>

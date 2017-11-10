@@ -1,0 +1,14 @@
+<div class="row col-12 footer-controls">
+  {{#if isAddingItem}}
+    {{new-item-input
+      isAddingItem=isAddingItem
+      addBtnClicked=addBtnClicked
+      class="form-control col-8"
+      value=newItem.title
+      placeholder="Enter Item Title ..."}}
+    {{fa-icon "plus" class="text-muted col-2 icon-hover float-right add-new" size=2 click=(action "addItem" list)}}
+    {{fa-icon "close" class="text-muted col-2 icon-hover float-right close-new" size=2 click=(action "cancelAddItem")}}
+  {{else}}
+    <h6 class="text-muted text-right" onclick={{action (mut isAddingItem) true}}>Add Item ...</h6>
+  {{/if}}
+</div>

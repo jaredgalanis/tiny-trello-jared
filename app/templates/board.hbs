@@ -1,15 +1,14 @@
-<h1 class="text-center text-muted">Tiny Trello</h1>
-<h3><button class="btn btn-secondary" {{action "addList"}}>Add a List</button></h3>
+<div class="pageTitle">
+  <h1 class="ember-title text-center">Tiny Trello</h1>
+</div>
 
-{{#each lists as |list|}}
-  <h3>
-    {{input class="form-control" value=list.title placeholder="Enter List Title"}}
-    <button class="btn btn-secondary" {{action "addItem" list}}>Add Item</button>
-    {{#each list.items as |item|}}
-      <ul class="list-unstyled">
-        {{trello-item item=item}}
-      </ul>
-    {{/each}}
-  </h3>
-{{/each}}
+<div class="lists">
+  {{#each lists as |list|}}
+    {{trello-list
+      list=list
+      addItem=(action "addItem")
+      editItem=(action "editItem")}}
+  {{/each}}
+  <h3><button class="btn btn-secondary pull-right" {{action "addList"}}>Add a List</button></h3>
+</div>
 {{outlet}}
