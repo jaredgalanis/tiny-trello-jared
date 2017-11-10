@@ -1,7 +1,10 @@
 # tiny-trello-jared
 
-This README outlines the details of collaborating on this Ember application.
-A short introduction of this app could easily go here.
+Welcome to my version of a tiny trello app. This edition of trello has no persistence layer and only uses ember data to manage data while your browswer page remains unrefreshed. A refresh will reset data to the default state.
+
+You can edit or delete items added to a list by clicking on the item the item itself. 
+
+Have fun and thanks for taking a look!
 
 ## Prerequisites
 
