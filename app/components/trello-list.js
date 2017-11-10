@@ -1,11 +1,12 @@
 import Component from '@ember/component';
+import EmberObject from '@ember/object';
 
 export default Component.extend({
   newItem: null,
   isAddingItem: false,
 
   didInsertElement() {
-    this.set("newItem", Ember.Object.create({}));
+    this.set("newItem", EmberObject.create({}));
   },
 
   actions: {
