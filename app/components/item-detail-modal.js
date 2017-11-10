@@ -15,7 +15,7 @@ export default Component.extend({
     },
 
     deleteItem(item) {
-      swal({
+      swal({ // eslint-disable-line
         title: "Are you sure?",
         text: "Once deleted, you will not be able to recover this item!",
         icon: "warning",
@@ -26,7 +26,7 @@ export default Component.extend({
         if (willDelete) {
           this.get('deleteItem')(item);
         } else {
-          swal.close();
+          swal.close(); // eslint-disable-line
         }
       });
     }

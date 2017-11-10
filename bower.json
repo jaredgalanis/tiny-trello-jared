@@ -1,4 +1,18 @@
 {
   "name": "tiny-trello-jared",
-  "dependencies": {}
+  "dependencies": {},
+  "homepage": "https://github.com/jaredgalanis/tiny-trello-jared",
+  "authors": [
+    "Jared Galanis <jaredgalanis@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
 }
