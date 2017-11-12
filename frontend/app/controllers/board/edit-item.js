@@ -4,12 +4,14 @@ export default Controller.extend({
   actions: {
     closeModal(item) {
       if(item.get('title')) {
-        this.transitionToRoute('board');
+        item.save().then(() => {
+          this.transitionToRoute('board');
+        });
       }
     },
 
     deleteItem(item) {
-      this.store.deleteRecord(item);
+      item.destroyRecord();
       this.transitionToRoute('board');
     }
   }

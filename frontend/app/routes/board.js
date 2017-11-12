@@ -2,7 +2,7 @@ import Route from '@ember/routing/route';
 
 export default Route.extend({
   model() {
-    return this.store.peekAll('list');
+    return this.store.findAll('list');
   },
 
   setupController(controller, model) {

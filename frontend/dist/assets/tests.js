@@ -42,7 +42,7 @@ define('tiny-trello-jared/tests/app.lint-test', [], function () {
 
   QUnit.test('controllers/board.js', function (assert) {
     assert.expect(1);
-    assert.ok(true, 'controllers/board.js should pass ESLint\n\n');
+    assert.ok(false, 'controllers/board.js should pass ESLint\n\n32:11 - \'Ember\' is not defined. (no-undef)');
   });
 
   QUnit.test('controllers/board/edit-item.js', function (assert) {
@@ -78,6 +78,11 @@ define('tiny-trello-jared/tests/app.lint-test', [], function () {
   QUnit.test('routes/board/edit-item.js', function (assert) {
     assert.expect(1);
     assert.ok(true, 'routes/board/edit-item.js should pass ESLint\n\n');
+  });
+
+  QUnit.test('serializers/application.js', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'serializers/application.js should pass ESLint\n\n');
   });
 });
 define('tiny-trello-jared/tests/helpers/destroy-app', ['exports'], function (exports) {
@@ -401,6 +406,11 @@ define('tiny-trello-jared/tests/tests.lint-test', [], function () {
     assert.expect(1);
     assert.ok(true, 'unit/routes/board/edit-item-test.js should pass ESLint\n\n');
   });
+
+  QUnit.test('unit/serializers/application-test.js', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/serializers/application-test.js should pass ESLint\n\n');
+  });
 });
 define('tiny-trello-jared/tests/unit/adapters/application-test', ['ember-qunit'], function (_emberQunit) {
   'use strict';
@@ -496,6 +506,23 @@ define('tiny-trello-jared/tests/unit/routes/board/edit-item-test', ['ember-qunit
   (0, _emberQunit.test)('it exists', function (assert) {
     var route = this.subject();
     assert.ok(route);
+  });
+});
+define('tiny-trello-jared/tests/unit/serializers/application-test', ['ember-qunit'], function (_emberQunit) {
+  'use strict';
+
+  (0, _emberQunit.moduleForModel)('application', 'Unit | Serializer | application', {
+    // Specify the other units that are required for this test.
+    needs: ['serializer:application']
+  });
+
+  // Replace this with your real tests.
+  (0, _emberQunit.test)('it serializes records', function (assert) {
+    var record = this.subject();
+
+    var serializedRecord = record.serialize();
+
+    assert.ok(serializedRecord);
   });
 });
 require('tiny-trello-jared/tests/test-helper');

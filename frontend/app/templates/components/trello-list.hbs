@@ -1,6 +1,9 @@
 <div class="list">
   <header>
-    {{input class="form-control" value=list.title placeholder="Enter List Title ..."}}
+    <div class="row col-12">
+    {{input class="form-control col-10" value=list.title placeholder="Enter List Title ..."}}
+    {{fa-icon "trash-o" class="text-muted col-2 icon-hover float-right" size=2 click=(action "deleteList" list)}}
+    </div>
   </header>
   <ul>
     {{#each list.items as |item|}}

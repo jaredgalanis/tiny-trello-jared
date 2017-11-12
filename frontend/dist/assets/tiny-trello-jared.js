@@ -8,7 +8,12 @@ define('tiny-trello-jared/adapters/application', ['exports', 'ember-data'], func
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = _emberData.default.JSONAPIAdapter.extend({});
+  exports.default = _emberData.default.JSONAPIAdapter.extend({
+    pathForType: function pathForType(type) {
+      var underscored = Ember.String.underscore(type);
+      return Ember.String.pluralize(underscored);
+    }
+  });
 });
 define('tiny-trello-jared/app', ['exports', 'tiny-trello-jared/resolver', 'ember-load-initializers', 'tiny-trello-jared/config/environment'], function (exports, _resolver, _emberLoadInitializers, _environment) {
   'use strict';
@@ -142,6 +147,9 @@ define('tiny-trello-jared/components/trello-list', ['exports'], function (export
       },
       editItem: function editItem(item) {
         this.get('editItem')(item);
+      },
+      deleteList: function deleteList(list) {
+        this.get('deleteList')(list);
       }
     }
   });
@@ -169,14 +177,35 @@ define('tiny-trello-jared/controllers/board', ['exports'], function (exports) {
   exports.default = Controller.extend({
     actions: {
       addItem: function addItem(list, newItem) {
-        this.store.createRecord('item', { title: newItem.title, list: list });
-        newItem.title = '';
+        var item = this.store.createRecord('item', { title: newItem.title, list: list });
+        list.save().then(function () {
+          item.save().then(function () {
+            newItem.title = '';
+          });
+        });
       },
       editItem: function editItem(item) {
         this.transitionToRoute('board.edit-item', item);
       },
       addList: function addList() {
         this.store.createRecord('list');
+      },
+      deleteList: function deleteList(list) {
+        swal({ // eslint-disable-line
+          title: "Are you sure?",
+          text: "Once deleted, you will not be able to recover this list or its items!",
+          icon: "warning",
+          buttons: true,
+          dangerMode: true
+        }).then(function (willDelete) {
+          if (willDelete) {
+            Ember.RSVP.allSettled(list.get('items').invoke('destroyRecord')).then(function () {
+              list.destroyRecord();
+            });
+          } else {
+            swal.close(); // eslint-disable-line
+          }
+        });
       }
     }
   });
@@ -191,12 +220,16 @@ define('tiny-trello-jared/controllers/board/edit-item', ['exports'], function (e
   exports.default = Controller.extend({
     actions: {
       closeModal: function closeModal(item) {
+        var _this = this;
+
         if (item.get('title')) {
-          this.transitionToRoute('board');
+          item.save().then(function () {
+            _this.transitionToRoute('board');
+          });
         }
       },
       deleteItem: function deleteItem(item) {
-        this.store.deleteRecord(item);
+        item.destroyRecord();
         this.transitionToRoute('board');
       }
     }
@@ -455,7 +488,7 @@ define('tiny-trello-jared/routes/board', ['exports'], function (exports) {
   var Route = Ember.Route;
   exports.default = Route.extend({
     model: function model() {
-      return this.store.peekAll('list');
+      return this.store.findAll('list');
     },
     setupController: function setupController(controller, model) {
       controller.set('lists', model);
@@ -473,6 +506,25 @@ define('tiny-trello-jared/routes/board/edit-item', ['exports'], function (export
   exports.default = Route.extend({
     model: function model(params) {
       return this.store.peekRecord('item', params.item_id);
+    }
+  });
+});
+define('tiny-trello-jared/serializers/application', ['exports', 'ember-data'], function (exports, _emberData) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var underscore = Ember.String.underscore;
+
+  exports.default = _emberData.default.JSONAPISerializer.extend({
+    keyForAttribute: function keyForAttribute(attr) {
+      return underscore(attr);
+    },
+
+    keyForRelationship: function keyForRelationship(rawKey) {
+      return underscore(rawKey);
     }
   });
 });
@@ -503,7 +555,7 @@ define("tiny-trello-jared/templates/board", ["exports"], function (exports) {
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "rS7GLxij", "block": "{\"symbols\":[\"list\"],\"statements\":[[6,\"div\"],[9,\"class\",\"pageTitle\"],[7],[0,\"\\n  \"],[6,\"h1\"],[9,\"class\",\"ember-title text-center\"],[7],[0,\"Tiny Trello\"],[8],[0,\"\\n\"],[8],[0,\"\\n\\n\"],[6,\"div\"],[9,\"class\",\"lists\"],[7],[0,\"\\n\"],[4,\"each\",[[20,[\"lists\"]]],null,{\"statements\":[[0,\"    \"],[1,[25,\"trello-list\",null,[[\"list\",\"addItem\",\"editItem\"],[[19,1,[]],[25,\"action\",[[19,0,[]],\"addItem\"],null],[25,\"action\",[[19,0,[]],\"editItem\"],null]]]],false],[0,\"\\n\"]],\"parameters\":[1]},null],[0,\"  \"],[6,\"h3\"],[7],[6,\"button\"],[9,\"class\",\"btn btn-secondary pull-right\"],[3,\"action\",[[19,0,[]],\"addList\"]],[7],[0,\"Add a List\"],[8],[8],[0,\"\\n\"],[8],[0,\"\\n\"],[1,[18,\"outlet\"],false],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "tiny-trello-jared/templates/board.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "L1Wh4/73", "block": "{\"symbols\":[\"list\"],\"statements\":[[6,\"div\"],[9,\"class\",\"pageTitle\"],[7],[0,\"\\n  \"],[6,\"h1\"],[9,\"class\",\"ember-title text-center\"],[7],[0,\"Tiny Trello\"],[8],[0,\"\\n\"],[8],[0,\"\\n\\n\"],[6,\"div\"],[9,\"class\",\"lists\"],[7],[0,\"\\n\"],[4,\"each\",[[20,[\"lists\"]]],null,{\"statements\":[[0,\"    \"],[1,[25,\"trello-list\",null,[[\"list\",\"addItem\",\"editItem\",\"deleteList\"],[[19,1,[]],[25,\"action\",[[19,0,[]],\"addItem\"],null],[25,\"action\",[[19,0,[]],\"editItem\"],null],[25,\"action\",[[19,0,[]],\"deleteList\"],null]]]],false],[0,\"\\n\"]],\"parameters\":[1]},null],[0,\"  \"],[6,\"h3\"],[7],[6,\"button\"],[9,\"class\",\"btn btn-secondary pull-right\"],[3,\"action\",[[19,0,[]],\"addList\"]],[7],[0,\"Add a List\"],[8],[8],[0,\"\\n\"],[8],[0,\"\\n\"],[1,[18,\"outlet\"],false],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "tiny-trello-jared/templates/board.hbs" } });
 });
 define("tiny-trello-jared/templates/board/edit-item", ["exports"], function (exports) {
   "use strict";
@@ -551,7 +603,7 @@ define("tiny-trello-jared/templates/components/trello-list", ["exports"], functi
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "Q0O07srT", "block": "{\"symbols\":[\"item\"],\"statements\":[[6,\"div\"],[9,\"class\",\"list\"],[7],[0,\"\\n  \"],[6,\"header\"],[7],[0,\"\\n    \"],[1,[25,\"input\",null,[[\"class\",\"value\",\"placeholder\"],[\"form-control\",[20,[\"list\",\"title\"]],\"Enter List Title ...\"]]],false],[0,\"\\n  \"],[8],[0,\"\\n  \"],[6,\"ul\"],[7],[0,\"\\n\"],[4,\"each\",[[20,[\"list\",\"items\"]]],null,{\"statements\":[[0,\"      \"],[1,[25,\"trello-item\",null,[[\"item\",\"click\"],[[19,1,[]],[25,\"action\",[[19,0,[]],\"editItem\",[19,1,[]]],null]]]],false],[0,\"\\n\"]],\"parameters\":[1]},null],[0,\"  \"],[8],[0,\"\\n  \"],[6,\"footer\"],[7],[0,\"\\n    \"],[1,[25,\"new-item\",null,[[\"newItem\",\"list\",\"isAddingItem\",\"addItem\",\"cancelAddItem\"],[[20,[\"newItem\"]],[20,[\"list\"]],[20,[\"isAddingItem\"]],[25,\"action\",[[19,0,[]],\"addItem\"],null],[25,\"action\",[[19,0,[]],\"cancelAddItem\"],null]]]],false],[0,\"\\n  \"],[8],[0,\"\\n\"],[8],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "tiny-trello-jared/templates/components/trello-list.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "k0O0cMcO", "block": "{\"symbols\":[\"item\"],\"statements\":[[6,\"div\"],[9,\"class\",\"list\"],[7],[0,\"\\n  \"],[6,\"header\"],[7],[0,\"\\n    \"],[6,\"div\"],[9,\"class\",\"row col-12\"],[7],[0,\"\\n    \"],[1,[25,\"input\",null,[[\"class\",\"value\",\"placeholder\"],[\"form-control col-10\",[20,[\"list\",\"title\"]],\"Enter List Title ...\"]]],false],[0,\"\\n    \"],[6,\"i\"],[9,\"class\",\"fa fa-2x fa-trash-o text-muted col-2 icon-hover float-right\"],[9,\"aria-hidden\",\"true\"],[10,\"onclick\",[25,\"action\",[[19,0,[]],\"deleteList\",[20,[\"list\"]]],null],null],[7],[8],[0,\"\\n    \"],[8],[0,\"\\n  \"],[8],[0,\"\\n  \"],[6,\"ul\"],[7],[0,\"\\n\"],[4,\"each\",[[20,[\"list\",\"items\"]]],null,{\"statements\":[[0,\"      \"],[1,[25,\"trello-item\",null,[[\"item\",\"click\"],[[19,1,[]],[25,\"action\",[[19,0,[]],\"editItem\",[19,1,[]]],null]]]],false],[0,\"\\n\"]],\"parameters\":[1]},null],[0,\"  \"],[8],[0,\"\\n  \"],[6,\"footer\"],[7],[0,\"\\n    \"],[1,[25,\"new-item\",null,[[\"newItem\",\"list\",\"isAddingItem\",\"addItem\",\"cancelAddItem\"],[[20,[\"newItem\"]],[20,[\"list\"]],[20,[\"isAddingItem\"]],[25,\"action\",[[19,0,[]],\"addItem\"],null],[25,\"action\",[[19,0,[]],\"cancelAddItem\"],null]]]],false],[0,\"\\n  \"],[8],[0,\"\\n\"],[8],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "tiny-trello-jared/templates/components/trello-list.hbs" } });
 });
 
 
@@ -575,6 +627,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("tiny-trello-jared/app")["default"].create({"name":"tiny-trello-jared","version":"0.0.0+0a2ea5d4"});
+  require("tiny-trello-jared/app")["default"].create({"name":"tiny-trello-jared","version":"0.0.0+3c579dab"});
 }
 //# sourceMappingURL=tiny-trello-jared.map

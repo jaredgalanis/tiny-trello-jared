@@ -22,6 +22,11 @@ export default Component.extend({
 
     editItem(item) {
       this.get('editItem')(item);
+    },
+
+    deleteList(list) {
+      this.get('deleteList')(list);
     }
+
   }
 });
