@@ -575,6 +575,6 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("tiny-trello-jared/app")["default"].create({"name":"tiny-trello-jared","version":"0.0.0+67e62998"});
+  require("tiny-trello-jared/app")["default"].create({"name":"tiny-trello-jared","version":"0.0.0+0a2ea5d4"});
 }
 //# sourceMappingURL=tiny-trello-jared.map
