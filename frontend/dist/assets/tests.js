@@ -42,7 +42,7 @@ define('tiny-trello-jared/tests/app.lint-test', [], function () {
 
   QUnit.test('controllers/board.js', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'controllers/board.js should pass ESLint\n\n32:11 - \'Ember\' is not defined. (no-undef)');
+    assert.ok(true, 'controllers/board.js should pass ESLint\n\n');
   });
 
   QUnit.test('controllers/board/edit-item.js', function (assert) {
